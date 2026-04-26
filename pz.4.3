@@ -1,0 +1,117 @@
+#pragma once
+
+namespace YourProjectName { // Замініть YourProjectName на назву вашого проєкту
+
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Data;
+    using namespace System::Drawing;
+
+    public ref class MyForm : public System::Windows::Forms::Form
+    {
+    public:
+        MyForm(void)
+        {
+            InitializeComponent();
+        }
+
+    protected:
+        ~MyForm()
+        {
+            if (components)
+            {
+                delete components;
+            }
+        }
+
+    // Оголошення компонентів (генерується автоматично конструктором форм)
+    private: System::Windows::Forms::DataGridView^ dataGridView1;
+    private: System::Windows::Forms::DataGridView^ dataGridView2;
+    private: System::Windows::Forms::DataGridView^ dataGridView3;
+    private: System::Windows::Forms::Button^ button1;
+    private: System::Windows::Forms::Button^ button2;
+    private: System::Windows::Forms::Button^ button3;
+
+    private:
+        System::ComponentModel::Container ^components;
+
+#pragma region Windows Form Designer generated code
+        void InitializeComponent(void)
+        {
+            // ... (Тут знаходиться автоматично згенерований код дизайнера) ...
+            // ... (Не змінюйте його вручну) ...
+        }
+#pragma endregion
+
+    // ========================================================
+    // ОБРОБНИКИ ПОДІЙ
+    // ========================================================
+
+    // 1. Подія завантаження форми (налаштування таблиць на 10 стовпців)
+    private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+        dataGridView1->ColumnCount = 10;
+        dataGridView1->Rows->Add(1);
+        
+        dataGridView2->ColumnCount = 10;
+        dataGridView2->Rows->Add(1);
+        
+        dataGridView3->ColumnCount = 10;
+        dataGridView3->Rows->Add(1);
+    }
+
+    // 2. Кнопка 1: Заповнення масиву випадковими числами з діапазону [-50; 50]
+    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+        Random^ rand = gcnew Random();
+        for(int i = 0; i < 10; i++) {
+            int val = rand->Next(-50, 51); // Генерування чисел від -50 до 50
+            dataGridView1->Rows[0]->Cells[i]->Value = val;
+        }
+    }
+
+    // 3. Кнопка 2: Піднесення до квадрату (зчитуємо з 1-ї таблиці, пишемо в 2-гу)
+    private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+        for(int i = 0; i < 10; i++) {
+            // Перевіряємо, чи комірка не порожня
+            if (dataGridView1->Rows[0]->Cells[i]->Value != nullptr) {
+                int val = Convert::ToInt32(dataGridView1->Rows[0]->Cells[i]->Value);
+                dataGridView2->Rows[0]->Cells[i]->Value = Convert::ToString(val * val);
+            }
+        }
+    }
+
+    // 4. Кнопка 3: Сортування масиву з 2-ї таблиці методом бульбашки
+    private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e) {
+        int a[10];
+        int dop; // Додаткова змінна для обміну значень
+        
+        // Зчитуємо дані з другої таблиці у масив a
+        for (int i = 0; i < 10; i++) {
+            if (dataGridView2->Rows[0]->Cells[i]->Value != nullptr) {
+                a[i] = Convert::ToInt32(dataGridView2->Rows[0]->Cells[i]->Value);
+            } else {
+                a[i] = 0; // Якщо комірка порожня, записуємо 0
+            }
+        }
+        
+        // Сортування методом бульбашки 
+        // (у методичці знак '<' сортує масив за спаданням, якщо треба за зростанням — замініть на '>')
+        for (int j = 0; j < 10; j++) {
+            for (int i = 0; i < 9 - j; i++) {
+                if (a[i] < a[i + 1]) { 
+                    dop = a[i + 1];
+                    a[i + 1] = a[i];
+                    a[i] = dop;
+                }
+            }
+        }
+        
+        // Виведення відсортованого масиву у третю таблицю
+        for (int i = 0; i < 10; i++) {
+            dataGridView3->Rows[0]->Cells[i]->Value = Convert::ToString(a[i]);
+        }
+    }
+
+    };
+}
