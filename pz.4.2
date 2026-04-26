@@ -1,0 +1,97 @@
+#pragma once
+
+namespace YourProjectName { // Назва вашого проєкту
+
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Data;
+    using namespace System::Drawing;
+
+    public ref class MyForm : public System::Windows::Forms::Form
+    {
+    public:
+        MyForm(void)
+        {
+            InitializeComponent();
+        }
+
+    protected:
+        ~MyForm()
+        {
+            if (components)
+            {
+                delete components;
+            }
+        }
+
+    // Оголошення компонентів форми (генерується автоматично)
+    private: System::Windows::Forms::Button^ button1;
+    private: System::Windows::Forms::Button^ button2;
+    private: System::Windows::Forms::TextBox^ textBox1;
+    private: System::Windows::Forms::TextBox^ textBox2;
+    private: System::Windows::Forms::TextBox^ textBox3;
+    private: System::Windows::Forms::Label^ label1;
+    private: System::Windows::Forms::Label^ label2;
+
+    private:
+        System::ComponentModel::Container ^components;
+
+        // ========================================================
+        // ОГОЛОШЕННЯ ГЛОБАЛЬНИХ ЗМІННИХ
+        // Оголошуємо масив та його розмірність усередині класу
+        // ========================================================
+        int n;
+        int a[100];
+
+#pragma region Windows Form Designer generated code
+        void InitializeComponent(void)
+        {
+            // ... (Тут знаходиться автоматично згенерований код дизайнера) ...
+            // ... (Не змінюйте його вручну) ...
+        }
+#pragma endregion
+
+    // ========================================================
+    // ОБРОБНИКИ ПОДІЙ ДЛЯ КНОПОК
+    // ========================================================
+
+    // Кнопка 1: Заповнення масиву, виведення, сума непарних та кількість парних
+    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+        try {
+            n = Convert::ToInt32(textBox1->Text); // Зчитуємо розмірність з textBox1
+            textBox2->Clear(); // Очищуємо поле перед виведенням нового масиву
+            
+            Random^ rand = gcnew Random();
+            int sumOdd = 0;     // Для суми непарних
+            int countEven = 0;  // Для кількості парних
+            
+            for (int i = 0; i < n; i++) {
+                a[i] = rand->Next(0, 51); // Генеруємо випадкові числа від 0 до 50
+                textBox2->AppendText(a[i].ToString() + "  "); // Виводимо через пробіл
+                
+                // Перевірка на непарність (залишок від ділення на 2 не дорівнює 0)
+                if (a[i] % 2 != 0) {
+                    sumOdd += a[i];
+                } else { // Інакше - елемент парний
+                    countEven++;
+                }
+            }
+            
+            // Виводимо результати обчислень у Label
+            label1->Text = "Сума непарних: " + sumOdd.ToString();
+            label2->Text = "Кількість парних: " + countEven.ToString();
+        }
+        catch (...) {
+            MessageBox::Show("Введіть коректну розмірність масиву (ціле число)!", "Помилка", MessageBoxButtons::OK, MessageBoxIcon::Error);
+        }
+    }
+
+    // Кнопка 2: Сортування масиву методом екстремальних елементів (вибором)
+    private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+        // Алгоритм сортування вибором (за зростанням)
+        for (int j = 0; j < n - 1; j++) {
+            int min = j; // Припускаємо, що поточний елемент найменший
+            
+            for (int i = j + 1; i < n; i++) {
