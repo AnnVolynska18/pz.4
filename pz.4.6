@@ -1,0 +1,105 @@
+#pragma once
+
+namespace YourProjectName { // Замініть YourProjectName на назву вашого проєкту
+
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Data;
+    using namespace System::Drawing;
+
+    public ref class MyForm : public System::Windows::Forms::Form
+    {
+    public:
+        MyForm(void)
+        {
+            InitializeComponent();
+        }
+
+    protected:
+        ~MyForm()
+        {
+            if (components)
+            {
+                delete components;
+            }
+        }
+
+    // Оголошення компонентів
+    private: System::Windows::Forms::Button^ button1;
+    private: System::Windows::Forms::TextBox^ textBox1;
+    private: System::Windows::Forms::RichTextBox^ richTextBox1;
+    private: System::Windows::Forms::Label^ label1;
+    private: System::Windows::Forms::Label^ label2;
+
+    private:
+        System::ComponentModel::Container ^components;
+
+        // Оголошуємо масив та його розмірність
+        int n;
+        int a[100];
+
+#pragma region Windows Form Designer generated code
+        void InitializeComponent(void)
+        {
+            // Автоматично згенерований код дизайнера...
+        }
+#pragma endregion
+
+    // ========================================================
+    // Обробник події натискання на кнопку (Click)
+    // ========================================================
+    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+        try {
+            // Зчитуємо кількість елементів
+            n = Convert::ToInt32(textBox1->Text);
+            
+            if (n <= 0 || n > 100) {
+                MessageBox::Show("Введіть розмірність від 1 до 100!");
+                return;
+            }
+
+            richTextBox1->Clear();
+            Random^ rand = gcnew Random();
+
+            double sumAll = 0;       // Сума всіх елементів
+            double sumEvenIdx = 0;   // Сума елементів з парними індексами
+            int countEvenIdx = 0;    // Кількість елементів з парними індексами
+
+            // Заповнення масиву та обчислення сум
+            for (int i = 0; i < n; i++) {
+                // Генеруємо випадкові числа від -50 до 50
+                a[i] = rand->Next(-50, 51); 
+                richTextBox1->AppendText("a[" + i + "] = " + a[i].ToString() + "\n");
+
+                // Додаємо до загальної суми
+                sumAll += a[i];
+
+                // Перевіряємо, чи індекс є парним (0, 2, 4, 6...)
+                if (i % 2 == 0) {
+                    sumEvenIdx += a[i];
+                    countEvenIdx++;
+                }
+            }
+
+            // Обчислення середнього арифметичного
+            double avgAll = sumAll / n;
+            double avgEvenIdx = 0;
+            
+            // Захист від ділення на нуль (хоча countEvenIdx завжди буде > 0, якщо n > 0)
+            if (countEvenIdx > 0) {
+                avgEvenIdx = sumEvenIdx / countEvenIdx;
+            }
+
+            // Виведення результатів
+            label1->Text = "Середнє арифметичне всього масиву: " + Math::Round(avgAll, 2).ToString();
+            label2->Text = "Середнє арифметичне (парні індекси): " + Math::Round(avgEvenIdx, 2).ToString();
+        }
+        catch (...) {
+            MessageBox::Show("Будь ласка, введіть коректне ціле число для розмірності масиву!", "Помилка введення", MessageBoxButtons::OK, MessageBoxIcon::Error);
+        }
+    }
+
+    };
+}
