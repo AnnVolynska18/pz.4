@@ -1,0 +1,105 @@
+#pragma once
+
+namespace YourProjectName {
+
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Data;
+    using namespace System::Drawing;
+
+    public ref class MyForm : public System::Windows::Forms::Form
+    {
+    public:
+        MyForm(void)
+        {
+            InitializeComponent();
+        }
+
+    protected:
+        ~MyForm()
+        {
+            if (components)
+            {
+                delete components;
+            }
+        }
+
+    private: System::Windows::Forms::Button^ button1;
+    private: System::Windows::Forms::Button^ button2;
+    private: System::Windows::Forms::RichTextBox^ richTextBox1;
+    private: System::Windows::Forms::Label^ labelResult;
+    private: System::Windows::Forms::TextBox^ textBoxN;
+
+    private:
+        System::ComponentModel::Container ^components;
+
+        // Оголошення масиву та змінної для розмірності
+        int n;
+        int a[100];
+
+#pragma region Windows Form Designer generated code
+        void InitializeComponent(void)
+        {
+            // Автоматично згенерований код дизайнера...
+        }
+#pragma endregion
+
+    // Кнопка 1: Заповнення масиву випадковими числами
+    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+        try {
+            n = Convert::ToInt32(textBoxN->Text);
+            richTextBox1->Clear();
+            Random^ rand = gcnew Random();
+
+            for (int i = 0; i < n; i++) {
+                // Генеруємо числа від -20 до 20, щоб точно були від'ємні
+                a[i] = rand->Next(-20, 21);
+                richTextBox1->AppendText(a[i].ToString() + " ");
+            }
+        }
+        catch (...) {
+            MessageBox::Show("Введіть кількість елементів!");
+        }
+    }
+
+    // Кнопка 2: Обчислення суми між першим і останнім від'ємними елементами
+    private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+        int firstIndex = -1;
+        int lastIndex = -1;
+
+        // Шукаємо індекс першого від'ємного елемента
+        for (int i = 0; i < n; i++) {
+            if (a[i] < 0) {
+                firstIndex = i;
+                break;
+            }
+        }
+
+        // Шукаємо індекс останнього від'ємного елемента
+        for (int i = n - 1; i >= 0; i--) {
+            if (a[i] < 0) {
+                lastIndex = i;
+                break;
+            }
+        }
+
+        // Якщо знайдено принаймні два від'ємних елементи
+        if (firstIndex != -1 && lastIndex != -1 && lastIndex > firstIndex + 1) {
+            int sum = 0;
+            for (int i = firstIndex + 1; i < lastIndex; i++) {
+                sum += a[i];
+            }
+            labelResult->Text = "Сума елементів: " + sum.ToString();
+        } 
+        else if (firstIndex == lastIndex) {
+            labelResult->Text = "Знайдено лише один від'ємний елемент";
+        }
+        else {
+            labelResult->Text = "Між елементами немає значень або від'ємні числа відсутні";
+        }
+    }
+
+    };
+}
