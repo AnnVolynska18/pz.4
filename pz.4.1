@@ -1,0 +1,102 @@
+#pragma once
+// 1. Підключення бібліотеки для використання InputBox
+#using <Microsoft.VisualBasic.dll> 
+
+namespace YourProjectName { // Тут буде назва вашого проєкту
+
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Data;
+    using namespace System::Drawing;
+
+    public ref class MyForm : public System::Windows::Forms::Form
+    {
+    public:
+        MyForm(void)
+        {
+            InitializeComponent();
+        }
+
+    protected:
+        ~MyForm()
+        {
+            if (components)
+            {
+                delete components;
+            }
+        }
+
+    // Оголошення компонентів форми (генерується автоматично)
+    private: System::Windows::Forms::Button^ button1;
+    private: System::Windows::Forms::Button^ button2;
+    private: System::Windows::Forms::RichTextBox^ richTextBox1;
+    private: System::Windows::Forms::Label^ label1;
+
+    private:
+        System::ComponentModel::Container ^components;
+
+        // ========================================================
+        // 2. ОГОЛОШЕННЯ ЗМІННИХ МАСИВУ ТА ЙОГО РОЗМІРНОСТІ
+        // Розміщуємо їх всередині класу форми, але поза методами
+        // ========================================================
+        int n;
+        int a[100];
+
+#pragma region Windows Form Designer generated code
+        void InitializeComponent(void)
+        {
+            // ... (Тут знаходиться автоматично згенерований код дизайнера) ...
+            // ... (Не змінюйте його вручну) ...
+        }
+#pragma endregion
+
+    // ========================================================
+    // 3. ОБРОБНИКИ ПОДІЙ
+    // ========================================================
+
+    // Обробник Кнопки 1: Введення розмірності та елементів масиву
+    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+        richTextBox1->Clear(); // Очищуємо поле перед новим введенням
+        
+        // Введення розмірності n
+        String^ input = Microsoft::VisualBasic::Interaction::InputBox("n=", "Введіть розмірність масиву", "10", 10, 10);
+        if (input == "") return; // Якщо користувач натиснув Cancel
+        
+        n = Convert::ToInt32(input);
+        
+        // Введення елементів масиву
+        for (int i = 0; i < n; i++) {
+            String^ val = Microsoft::VisualBasic::Interaction::InputBox("Введення значення " + i.ToString() + " елемента", "Заповнити масив", "0", 10, 10);
+            if (val != "") {
+                a[i] = Convert::ToInt32(val);
+                // Виведення введеного елемента у RichTextBox
+                richTextBox1->AppendText(a[i].ToString() + "\n");
+            }
+        }
+    }
+
+    // Обробник Кнопки 2: Обчислення добутку парних елементів
+    private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+        int d = 1;           // Початкове значення добутку
+        bool found = false;  // Прапорець, чи знайшли хоча б один парний елемент
+        
+        for (int i = 0; i < n; i++) {
+            // Перевірка на парність
+            if (a[i] % 2 == 0) {
+                d *= a[i];
+                found = true;
+            }
+        }
+        
+        // Виведення результату в Label
+        if (found) {
+            label1->Text = "Добуток парних: " + d.ToString();
+        } else {
+            label1->Text = "Парних елементів немає";
+        }
+    }
+
+    };
+}
