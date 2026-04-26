@@ -1,0 +1,132 @@
+#pragma once
+
+namespace YourProjectName { // Замініть на назву вашого проєкту
+
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Data;
+    using namespace System::Drawing;
+
+    public ref class MyForm : public System::Windows::Forms::Form
+    {
+    public:
+        MyForm(void)
+        {
+            InitializeComponent();
+        }
+
+    protected:
+        ~MyForm()
+        {
+            if (components)
+            {
+                delete components;
+            }
+        }
+
+    // Оголошення компонентів
+    private: System::Windows::Forms::DataGridView^ dataGridView1;
+    private: System::Windows::Forms::Button^ button1;
+    private: System::Windows::Forms::Button^ button2;
+    private: System::Windows::Forms::TextBox^ textBoxRows;
+    private: System::Windows::Forms::TextBox^ textBoxCols;
+    private: System::Windows::Forms::Label^ labelMax;
+    private: System::Windows::Forms::Label^ labelMin;
+    private: System::Windows::Forms::Label^ labelSum;
+
+    private:
+        System::ComponentModel::Container ^components;
+
+#pragma region Windows Form Designer generated code
+        void InitializeComponent(void)
+        {
+            // Автоматично згенерований код дизайнера...
+        }
+#pragma endregion
+
+    // ========================================================
+    // Кнопка 1: Створення та заповнення матриці випадковими числами
+    // ========================================================
+    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+        try {
+            int rows = Convert::ToInt32(textBoxRows->Text);
+            int cols = Convert::ToInt32(textBoxCols->Text);
+
+            // Налаштування розмірів DataGridView
+            dataGridView1->RowCount = rows;
+            dataGridView1->ColumnCount = cols;
+            
+            // Приховуємо заголовки для красивого вигляду матриці
+            dataGridView1->ColumnHeadersVisible = false;
+            dataGridView1->RowHeadersVisible = false;
+            dataGridView1->AllowUserToAddRows = false;
+
+            Random^ rand = gcnew Random();
+
+            // Заповнення матриці числами від -50 до 50
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    dataGridView1->Rows[i]->Cells[j]->Value = rand->Next(-50, 51);
+                }
+            }
+            
+            // Очищення попередніх результатів
+            labelMax->Text = "Максимум: ";
+            labelMin->Text = "Мінімум: ";
+            labelSum->Text = "Сума: ";
+        }
+        catch (...) {
+            MessageBox::Show("Введіть коректну кількість рядків та стовпців!", "Помилка");
+        }
+    }
+
+    // ========================================================
+    // Кнопка 2: Знаходження максимуму, мінімуму та суми
+    // ========================================================
+    private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+        if (dataGridView1->RowCount == 0 || dataGridView1->ColumnCount == 0) {
+            MessageBox::Show("Спочатку заповніть матрицю!", "Увага");
+            return;
+        }
+
+        int rows = dataGridView1->RowCount;
+        int cols = dataGridView1->ColumnCount;
+
+        // Ініціалізуємо max та min значенням першого елемента матриці [0][0]
+        int max = Convert::ToInt32(dataGridView1->Rows[0]->Cells[0]->Value);
+        int min = max;
+        int sum = 0;
+
+        // Проходимо по всіх елементах матриці
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (dataGridView1->Rows[i]->Cells[j]->Value != nullptr) {
+                    
+                    int currentVal = Convert::ToInt32(dataGridView1->Rows[i]->Cells[j]->Value);
+                    
+                    // Додаємо до загальної суми
+                    sum += currentVal;
+
+                    // Перевіряємо на максимум
+                    if (currentVal > max) {
+                        max = currentVal;
+                    }
+
+                    // Перевіряємо на мінімум
+                    if (currentVal < min) {
+                        min = currentVal;
+                    }
+                }
+            }
+        }
+
+        // Виведення результатів
+        labelMax->Text = "Максимум: " + max.ToString();
+        labelMin->Text = "Мінімум: " + min.ToString();
+        labelSum->Text = "Сума: " + sum.ToString();
+    }
+
+    };
+}
