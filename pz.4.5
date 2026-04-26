@@ -1,0 +1,104 @@
+#pragma once
+
+namespace YourProjectName { // Замініть на назву вашого проєкту
+
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Data;
+    using namespace System::Drawing;
+
+    public ref class MyForm : public System::Windows::Forms::Form
+    {
+    public:
+        MyForm(void)
+        {
+            InitializeComponent();
+        }
+
+    protected:
+        ~MyForm()
+        {
+            if (components)
+            {
+                delete components;
+            }
+        }
+
+    // Оголошення компонентів
+    private: System::Windows::Forms::DataGridView^ dataGridView1;
+    private: System::Windows::Forms::DataGridView^ dataGridView2;
+    private: System::Windows::Forms::DataGridView^ dataGridView3;
+    private: System::Windows::Forms::Button^ button1;
+    private: System::Windows::Forms::Button^ button2;
+
+    private:
+        System::ComponentModel::Container ^components;
+
+#pragma region Windows Form Designer generated code
+        void InitializeComponent(void)
+        {
+            // Автоматично згенерований код...
+        }
+#pragma endregion
+
+    // ========================================================
+    // 1. Обробник події завантаження форми (Form_Load)
+    // ========================================================
+    private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+        int n = 10; // Кількість елементів (стовпців) у масиві
+
+        // Налаштування dataGridView1
+        dataGridView1->ColumnCount = n;
+        dataGridView1->Rows->Add(1);
+        dataGridView1->ColumnHeadersVisible = false;
+        dataGridView1->RowHeadersVisible = false;
+        dataGridView1->AllowUserToAddRows = false;
+
+        // Налаштування dataGridView2
+        dataGridView2->ColumnCount = n;
+        dataGridView2->Rows->Add(1);
+        dataGridView2->ColumnHeadersVisible = false;
+        dataGridView2->RowHeadersVisible = false;
+        dataGridView2->AllowUserToAddRows = false;
+
+        // Налаштування dataGridView3
+        dataGridView3->ColumnCount = n;
+        dataGridView3->Rows->Add(1);
+        dataGridView3->ColumnHeadersVisible = false;
+        dataGridView3->RowHeadersVisible = false;
+        dataGridView3->AllowUserToAddRows = false;
+    }
+
+    // ========================================================
+    // 2. Кнопка 1: Заповнення випадковими числами [-50; 50]
+    // ========================================================
+    private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+        Random^ rand = gcnew Random();
+        
+        // Проходимось по всіх стовпцях першого рядка
+        for(int i = 0; i < dataGridView1->ColumnCount; i++) {
+            int val = rand->Next(-50, 51); // Діапазон від -50 до 50 включно
+            dataGridView1->Rows[0]->Cells[i]->Value = val;
+        }
+    }
+
+    // ========================================================
+    // 3. Кнопка 2: Піднесення до квадрату (з 1-ї таблиці в 2-гу)
+    // ========================================================
+    private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e) {
+        for(int i = 0; i < dataGridView1->ColumnCount; i++) {
+            // Перевіряємо, чи комірка не є порожньою
+            if (dataGridView1->Rows[0]->Cells[i]->Value != nullptr) {
+                // Зчитуємо значення з першої таблиці
+                int val = Convert::ToInt32(dataGridView1->Rows[0]->Cells[i]->Value);
+                
+                // Підносимо до квадрату і записуємо у другу таблицю
+                dataGridView2->Rows[0]->Cells[i]->Value = Convert::ToString(val * val);
+            }
+        }
+    }
+
+    };
+}
